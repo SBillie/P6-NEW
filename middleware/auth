@@ -1,0 +1,25 @@
+//protéger les routes sélectionnées et vérifier que l'utilisateur est authentifié avant d'autoriser l'envoi de ses requêtes
+
+
+const jwt = require("jsonwebtoken")
+const jsonwebtokenError = require("jsonwebtoken")
+
+
+//authentification de l'utilisateur
+function authUser (req, res) {
+    console.log("auth user")
+    const header= req.header("Authorization") 
+    if (header == null) return res.status(403).send({message: "Invalid"})
+    
+    
+    const token = req.headers.authorization.split(' ')[1];
+     if (token == null) return res.status(403).send({message: "token cannot be null"})
+
+    const decoded = jwt.verify(token, process.env.JWT_PASSWORD, (err, decoded)=> {
+        console.log ("Valid token. we can go ahead")
+        if (err) return res.status(403).send({message: "Invalid token" + err}) 
+        (next);
+    })
+}
+
+module.exports={authUser}
