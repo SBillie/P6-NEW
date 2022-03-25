@@ -7,20 +7,19 @@ avant d'autoriser l'envoi de ses requêtes.*/
 const jwt = require('jsonwebtoken');
 
 
-
+// enregistrement d'un nouvel utilisateur
 async function createUser (req,res) {
-    const {email, password} = req.body
+    try {
     
+    const {email, password} = req.body
     const hashedPassword = await hashPassword (password)
-
     const user = new User ({ email, password: hashedPassword})
-        
-user
-        .save()
-        .then(() => res.status(201).send ({message:"user registered!"}))    
-        .catch ((err) => res.status(400).send ({message:"User registration failed" + err})
-           
-)}
+    user.save()
+        res.status(201).send ({message:"user registered!"})  
+        } catch (err) {
+           res.status(400).send ({message:"User registration failed" + err})
+        }
+}
 
 function hashPassword (password) {
     const saltRounds = 10;
@@ -28,8 +27,7 @@ function hashPassword (password) {
 }
 
 async function logUser (req, res) {
-    try{
-
+    try {
 
     const email = req.body.email
     const password = req.body.password
@@ -51,7 +49,6 @@ async function logUser (req, res) {
 function createToken (email) {
     const jwtPassword = process.env.JWT_PASSWORD
     return jwt.sign({email:email}, jwtPassword, {expiresIn:"24h"})
-
 }
 
 module.exports = {createUser, logUser}
